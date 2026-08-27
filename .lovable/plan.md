@@ -4,7 +4,7 @@ Site em português (BR), visual escuro/esportivo seguindo o branding enviado: Or
 
 ## Páginas
 
-- **Início** — hero com o símbolo do grupo, chamada para participar, próximos treinos e torneio em destaque, prova social (fotos), aliados (USP, AJED, Disc Golf Brasil, PDGA) com nota clara de que são parceiros e não há vínculo legal.
+- **Início** — hero com o símbolo do grupo, chamada para participar, próximos treinos e torneio em destaque, prova social (fotos), aliados (USP, AJED, Disc Golf Brasil, PDGA) apresentados de forma sutil como parceiros de trabalho conjunto.
 - **Sobre** — história do grupo, Oky Leon, missão inclusiva e esportiva, parceiros.
 - **Aprenda disc golf** — o que é, regras básicas, tipos de disco, primeiros passos, perguntas frequentes.
 - **Treinos e agenda** — dias, horários e locais fixos de prática, como chegar, o que levar.
