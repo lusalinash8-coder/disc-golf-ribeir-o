@@ -1,42 +1,42 @@
 # A Turma do Disc Golf — Ribeirão Preto
 
-Site em português (BR), visual escuro/esportivo seguindo o branding enviado: Orbitron (títulos) + Exo 2 (texto), amarelo "Buzzing", verde "Corrosive", azul "Deep Space" e cinza "Carbon Fiber" sobre fundo escuro.
+Página en portugués (BR), con estilo oscuro y deportivo siguiendo el branding enviado: Orbitron (títulos) + Exo 2 (texto), amarillo "Buzzing", verde "Corrosive", azul "Deep Space" y gris "Carbon Fiber" sobre fondo oscuro.
 
 ## Páginas
 
-- **Início** — hero com o símbolo do grupo, chamada para participar, próximos treinos e torneio em destaque, prova social (fotos), aliados (USP, AJED, Disc Golf Brasil, PDGA) apresentados de forma sutil como parceiros de trabalho conjunto.
-- **Sobre** — história do grupo, Oky Leon, missão inclusiva e esportiva, parceiros.
-- **Aprenda disc golf** — o que é, regras básicas, tipos de disco, primeiros passos, perguntas frequentes.
-- **Treinos e agenda** — dias, horários e locais fixos de prática, como chegar, o que levar.
-- **Torneios** — lista de torneios (próximos e passados) e página de cada torneio com link compartilhável (`/torneios/nome-do-torneio`): data, local, formato, divisões, valor, vagas restantes, regulamento, e botão de inscrição.
-- **Galeria e contato** — fotos, links de Instagram/YouTube, WhatsApp e formulário de contato.
+- **Inicio** — hero con el símbolo del grupo, llamado a unirse, próximos entrenamientos y torneo destacado, prueba social (fotos), aliados (USP, AJED, Disc Golf Brasil, PDGA) presentados de forma sutil como socios de trabajo conjunto.
+- **Sobre** — historia del grupo, Oky Leon, misión inclusiva y deportiva, aliados.
+- **Aprende disc golf** — qué es, reglas básicas, tipos de disco, primeros pasos, preguntas frecuentes.
+- **Entrenamientos y agenda** — días, horarios y lugares fijos de práctica, cómo llegar, qué llevar.
+- **Torneos** — lista de torneos (próximos y pasados) y página de cada torneo con link compartible (`/torneios/nome-do-torneio`): fecha, lugar, formato, divisiones, valor, cupos restantes, reglamento y botón de inscripción.
+- **Galería y contacto** — fotos, links de Instagram/YouTube, WhatsApp y formulario de contacto.
 
-Cada página com seu próprio título/descrição para aparecer bem no Google e ao compartilhar links.
+Cada página tendrá su propio título y descripción para posicionar bien en Google y al compartir links.
 
-## Inscrição e pagamento de torneios
+## Inscripción y pago de torneos
 
-Fluxo do jogador: abre o link do torneio → escolhe divisão → preenche dados (nome, e-mail, telefone, número PDGA opcional) → paga com cartão ou PIX → vaga confirmada automaticamente e e-mail/tela de confirmação com o comprovante.
+Flujo del jugador: abre el link del torneo → elige división → completa datos (nombre, e-mail, teléfono, número PDGA opcional) → paga con tarjeta → cupo confirmado automáticamente y pantalla/comprobante de confirmación.
 
-- Pagamento com cartão de crédito/débito via checkout seguro, com confirmação automática da vaga assim que a transação é aprovada.
-- Vaga fica reservada por tempo limitado enquanto o pagamento está sendo processado; expira e libera a vaga se não for aprovado.
-- Controle de lotação: quando as vagas acabam, entra lista de espera.
+- Pago con tarjeta de crédito/débito vía checkout seguro, con confirmación automática del cupo en cuanto la transacción sea aprobada.
+- El cupo queda reservado por tiempo limitado mientras se procesa el pago; si no se aprueba, expira y se libera.
+- Control de cupos: cuando se acaben, entra lista de espera.
 
-Observação sobre pagamentos: o checkout de cartão exige a integração de pagamentos da Lovable (plano pago) ou uma conta Stripe própria. Na aprovação do plano eu verifico qual caminho está disponível na sua conta e sigo por ele; se nenhum estiver liberado no momento, entrego todo o fluxo pronto com o checkout desativado até conectar.
+Nota sobre pagos: el checkout de tarjeta requiere la integración de pagos de Lovable (plan pago) o una cuenta Stripe propia. Al aprobar el plan verifico cuál camino está disponible en tu cuenta y sigo ese; si ninguno está habilitado, entrego todo el flujo listo con el checkout desactivado hasta conectar.
 
-## Painel de administração
+## Panel de administración
 
-Login protegido para Oky e organizadores:
+Login protegido para Oky y organizadores:
 
-- Criar/editar/publicar torneios (data, local, divisões, preço, vagas, regulamento, imagem).
-- Ver e exportar inscritos por divisão, com status de pagamento.
-- Marcar check-in, cancelar inscrição, promover da lista de espera.
-- Gerenciar treinos da agenda, fotos da galeria e quem é organizador.
+- Crear/editar/publicar torneos (fecha, lugar, divisiones, precio, cupos, reglamento, imagen).
+- Ver y exportar inscritos por división, con estado de pago.
+- Marcar check-in, cancelar inscricción, promover desde lista de espera.
+- Gestionar entrenamientos de la agenda, fotos de la galería y quién es organizador.
 
-## Detalhes técnicos
+## Detalles técnicos
 
-- TanStack Start + Tailwind; tokens de cor/tipografia do branding em `src/styles.css`; fontes Orbitron/Exo 2 via `<link>` no root.
-- Logo e símbolo extraídos do PDF e hospedados como assets do projeto.
-- Lovable Cloud (banco + auth + storage) para: `tournaments`, `divisions`, `registrations`, `payments`, `trainings`, `gallery_photos`, `user_roles` (papéis em tabela separada, nunca no perfil).
-- RLS: leitura pública apenas de torneios publicados e conteúdo do site; inscrições visíveis só ao próprio inscrito e a admins; escrita restrita a admin via função `has_role`.
-- Pagamento processado em server functions; webhook público em `/api/public/*` com verificação de assinatura confirma a inscrição.
-- Validação com Zod no cliente e no servidor em todos os formulários.
+- TanStack Start + Tailwind; tokens de color/tipografía del branding en `src/styles.css`; fuentes Orbitron/Exo 2 vía `<link>` en el root.
+- Logo y símbolo extraídos del PDF y hospedados como assets del proyecto.
+- Lovable Cloud (base de datos + auth + storage) para: `tournaments`, `divisions`, `registrations`, `payments`, `trainings`, `gallery_photos`, `user_roles` (roles en tabla separada, nunca en el perfil).
+- RLS: lectura pública solo de torneios publicados y contenido del sitio; inscripciones visibles solo para el propio inscrito y admins; escritura restringida a admin vía función `has_role`.
+- Pago procesado en server functions; webhook público en `/api/public/*` con verificación de firma confirma la inscripción.
+- Validación con Zod en cliente y servidor en todos los formularios.
