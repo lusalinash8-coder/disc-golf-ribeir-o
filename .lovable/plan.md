@@ -17,7 +17,7 @@ Cada página com seu próprio título/descrição para aparecer bem no Google e 
 
 Fluxo do jogador: abre o link do torneio → escolhe divisão → preenche dados (nome, e-mail, telefone, número PDGA opcional) → paga com cartão ou PIX → vaga confirmada automaticamente e e-mail/tela de confirmação com o comprovante.
 
-- Cartão e PIX no mesmo checkout, com confirmação automática via webhook do provedor de pagamento (nada manual).
+- Pagamento com cartão de crédito/débito via checkout seguro, com confirmação automática da vaga assim que a transação é aprovada.
 - Vaga fica reservada por tempo limitado enquanto o pagamento está pendente (importante no PIX, que pode levar minutos); expira e libera a vaga se não for pago.
 - Controle de lotação: quando as vagas acabam, entra lista de espera.
 
