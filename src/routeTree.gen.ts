@@ -11,8 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AprendaRouteImport } from './routes/aprenda'
+import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as TorneiosRouteImport } from './routes/torneios'
 import { Route as TreinosRouteImport } from './routes/treinos'
+import { Route as TorneiosSlugRouteImport } from './routes/torneios.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -24,9 +27,19 @@ const AprendaRoute = AprendaRouteImport.update({
   path: '/aprenda',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TorneiosRoute = TorneiosRouteImport.update({
+  id: '/torneios',
+  path: '/torneios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TreinosRoute = TreinosRouteImport.update({
@@ -34,38 +47,76 @@ const TreinosRoute = TreinosRouteImport.update({
   path: '/treinos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TorneiosSlugRoute = TorneiosSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => TorneiosRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
+  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
+  '/torneios/$slug': typeof TorneiosSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
+  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
+  '/torneios/$slug': typeof TorneiosSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
+  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
+  '/torneios/$slug': typeof TorneiosSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/aprenda' | '/sobre' | '/treinos'
+  fullPaths:
+    | '/'
+    | '/aprenda'
+    | '/galeria'
+    | '/sobre'
+    | '/torneios'
+    | '/treinos'
+    | '/torneios/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/aprenda' | '/sobre' | '/treinos'
-  id: '__root__' | '/' | '/aprenda' | '/sobre' | '/treinos'
+  to:
+    | '/'
+    | '/aprenda'
+    | '/galeria'
+    | '/sobre'
+    | '/torneios'
+    | '/treinos'
+    | '/torneios/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/aprenda'
+    | '/galeria'
+    | '/sobre'
+    | '/torneios'
+    | '/treinos'
+    | '/torneios/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AprendaRoute: typeof AprendaRoute
+  GaleriaRoute: typeof GaleriaRoute
   SobreRoute: typeof SobreRoute
+  TorneiosRoute: typeof TorneiosRouteWithChildren
   TreinosRoute: typeof TreinosRoute
 }
 
@@ -85,11 +136,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AprendaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/torneios': {
+      id: '/torneios'
+      path: '/torneios'
+      fullPath: '/torneios'
+      preLoaderRoute: typeof TorneiosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/treinos': {
@@ -99,13 +164,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TreinosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/torneios/$slug': {
+      id: '/torneios/$slug'
+      path: '/$slug'
+      fullPath: '/torneios/$slug'
+      preLoaderRoute: typeof TorneiosSlugRouteImport
+      parentRoute: typeof TorneiosRoute
+    }
   }
 }
+
+interface TorneiosRouteChildren {
+  TorneiosSlugRoute: typeof TorneiosSlugRoute
+}
+
+const TorneiosRouteChildren: TorneiosRouteChildren = {
+  TorneiosSlugRoute: TorneiosSlugRoute,
+}
+
+const TorneiosRouteWithChildren = TorneiosRoute._addFileChildren(
+  TorneiosRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AprendaRoute: AprendaRoute,
+  GaleriaRoute: GaleriaRoute,
   SobreRoute: SobreRoute,
+  TorneiosRoute: TorneiosRouteWithChildren,
   TreinosRoute: TreinosRoute,
 }
 export const routeTree = rootRouteImport
