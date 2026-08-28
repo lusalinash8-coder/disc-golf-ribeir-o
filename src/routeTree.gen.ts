@@ -10,21 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AprendaRouteImport } from './routes/aprenda'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TorneiosRouteImport } from './routes/torneios'
 import { Route as TreinosRouteImport } from './routes/treinos'
 import { Route as TorneiosSlugRouteImport } from './routes/torneios.$slug'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AprendaRoute = AprendaRouteImport.update({
   id: '/aprenda',
   path: '/aprenda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GaleriaRoute = GaleriaRouteImport.update({
@@ -52,68 +64,89 @@ const TorneiosSlugRoute = TorneiosSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => TorneiosRoute,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
+  '/auth': typeof AuthRoute
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
   '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
   '/torneios/$slug': typeof TorneiosSlugRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
+  '/auth': typeof AuthRoute
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
   '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
   '/torneios/$slug': typeof TorneiosSlugRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/aprenda': typeof AprendaRoute
+  '/auth': typeof AuthRoute
   '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
   '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
   '/torneios/$slug': typeof TorneiosSlugRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/aprenda'
+    | '/auth'
     | '/galeria'
     | '/sobre'
     | '/torneios'
     | '/treinos'
     | '/torneios/$slug'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/aprenda'
+    | '/auth'
     | '/galeria'
     | '/sobre'
     | '/torneios'
     | '/treinos'
     | '/torneios/$slug'
+    | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/aprenda'
+    | '/auth'
     | '/galeria'
     | '/sobre'
     | '/torneios'
     | '/treinos'
     | '/torneios/$slug'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AprendaRoute: typeof AprendaRoute
+  AuthRoute: typeof AuthRoute
   GaleriaRoute: typeof GaleriaRoute
   SobreRoute: typeof SobreRoute
   TorneiosRoute: typeof TorneiosRouteWithChildren
@@ -129,11 +162,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/aprenda': {
       id: '/aprenda'
       path: '/aprenda'
       fullPath: '/aprenda'
       preLoaderRoute: typeof AprendaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/galeria': {
@@ -171,8 +218,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TorneiosSlugRouteImport
       parentRoute: typeof TorneiosRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface TorneiosRouteChildren {
   TorneiosSlugRoute: typeof TorneiosSlugRoute
@@ -188,7 +253,9 @@ const TorneiosRouteWithChildren = TorneiosRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AprendaRoute: AprendaRoute,
+  AuthRoute: AuthRoute,
   GaleriaRoute: GaleriaRoute,
   SobreRoute: SobreRoute,
   TorneiosRoute: TorneiosRouteWithChildren,
