@@ -10,13 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AprendaRouteImport } from './routes/aprenda'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as TorneiosRouteImport } from './routes/torneios'
 import { Route as TreinosRouteImport } from './routes/treinos'
+import { Route as TorneiosSlugRouteImport } from './routes/torneios.$slug'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AprendaRoute = AprendaRouteImport.update({
@@ -24,9 +34,24 @@ const AprendaRoute = AprendaRouteImport.update({
   path: '/aprenda',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TorneiosRoute = TorneiosRouteImport.update({
+  id: '/torneios',
+  path: '/torneios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TreinosRoute = TreinosRouteImport.update({
@@ -34,38 +59,97 @@ const TreinosRoute = TreinosRouteImport.update({
   path: '/treinos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TorneiosSlugRoute = TorneiosSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => TorneiosRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
+  '/auth': typeof AuthRoute
+  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
+  '/torneios/$slug': typeof TorneiosSlugRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
+  '/auth': typeof AuthRoute
+  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
+  '/torneios/$slug': typeof TorneiosSlugRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/aprenda': typeof AprendaRoute
+  '/auth': typeof AuthRoute
+  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
+  '/torneios': typeof TorneiosRouteWithChildren
   '/treinos': typeof TreinosRoute
+  '/torneios/$slug': typeof TorneiosSlugRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/aprenda' | '/sobre' | '/treinos'
+  fullPaths:
+    | '/'
+    | '/aprenda'
+    | '/auth'
+    | '/galeria'
+    | '/sobre'
+    | '/torneios'
+    | '/treinos'
+    | '/torneios/$slug'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/aprenda' | '/sobre' | '/treinos'
-  id: '__root__' | '/' | '/aprenda' | '/sobre' | '/treinos'
+  to:
+    | '/'
+    | '/aprenda'
+    | '/auth'
+    | '/galeria'
+    | '/sobre'
+    | '/torneios'
+    | '/treinos'
+    | '/torneios/$slug'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/aprenda'
+    | '/auth'
+    | '/galeria'
+    | '/sobre'
+    | '/torneios'
+    | '/treinos'
+    | '/torneios/$slug'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AprendaRoute: typeof AprendaRoute
+  AuthRoute: typeof AuthRoute
+  GaleriaRoute: typeof GaleriaRoute
   SobreRoute: typeof SobreRoute
+  TorneiosRoute: typeof TorneiosRouteWithChildren
   TreinosRoute: typeof TreinosRoute
 }
 
@@ -78,11 +162,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/aprenda': {
       id: '/aprenda'
       path: '/aprenda'
       fullPath: '/aprenda'
       preLoaderRoute: typeof AprendaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sobre': {
@@ -92,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/torneios': {
+      id: '/torneios'
+      path: '/torneios'
+      fullPath: '/torneios'
+      preLoaderRoute: typeof TorneiosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/treinos': {
       id: '/treinos'
       path: '/treinos'
@@ -99,13 +211,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TreinosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/torneios/$slug': {
+      id: '/torneios/$slug'
+      path: '/$slug'
+      fullPath: '/torneios/$slug'
+      preLoaderRoute: typeof TorneiosSlugRouteImport
+      parentRoute: typeof TorneiosRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface TorneiosRouteChildren {
+  TorneiosSlugRoute: typeof TorneiosSlugRoute
+}
+
+const TorneiosRouteChildren: TorneiosRouteChildren = {
+  TorneiosSlugRoute: TorneiosSlugRoute,
+}
+
+const TorneiosRouteWithChildren = TorneiosRoute._addFileChildren(
+  TorneiosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AprendaRoute: AprendaRoute,
+  AuthRoute: AuthRoute,
+  GaleriaRoute: GaleriaRoute,
   SobreRoute: SobreRoute,
+  TorneiosRoute: TorneiosRouteWithChildren,
   TreinosRoute: TreinosRoute,
 }
 export const routeTree = rootRouteImport
