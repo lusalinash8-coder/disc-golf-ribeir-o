@@ -13,11 +13,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AprendaRouteImport } from './routes/aprenda'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TorneiosRouteImport } from './routes/torneios'
 import { Route as TreinosRouteImport } from './routes/treinos'
-import { Route as TorneiosSlugRouteImport } from './routes/torneios.$slug'
+import { Route as TorneiosSlugRouteImport } from './routes/torneios_.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -39,11 +38,6 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GaleriaRoute = GaleriaRouteImport.update({
-  id: '/galeria',
-  path: '/galeria',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
@@ -60,9 +54,9 @@ const TreinosRoute = TreinosRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const TorneiosSlugRoute = TorneiosSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => TorneiosRoute,
+  id: '/torneios_/$slug',
+  path: '/torneios/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
@@ -74,9 +68,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
   '/auth': typeof AuthRoute
-  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
-  '/torneios': typeof TorneiosRouteWithChildren
+  '/torneios': typeof TorneiosRoute
   '/treinos': typeof TreinosRoute
   '/torneios/$slug': typeof TorneiosSlugRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -85,9 +78,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
   '/auth': typeof AuthRoute
-  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
-  '/torneios': typeof TorneiosRouteWithChildren
+  '/torneios': typeof TorneiosRoute
   '/treinos': typeof TreinosRoute
   '/torneios/$slug': typeof TorneiosSlugRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -98,11 +90,10 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/aprenda': typeof AprendaRoute
   '/auth': typeof AuthRoute
-  '/galeria': typeof GaleriaRoute
   '/sobre': typeof SobreRoute
-  '/torneios': typeof TorneiosRouteWithChildren
+  '/torneios': typeof TorneiosRoute
   '/treinos': typeof TreinosRoute
-  '/torneios/$slug': typeof TorneiosSlugRoute
+  '/torneios_/$slug': typeof TorneiosSlugRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -111,7 +102,6 @@ export interface FileRouteTypes {
     | '/'
     | '/aprenda'
     | '/auth'
-    | '/galeria'
     | '/sobre'
     | '/torneios'
     | '/treinos'
@@ -122,7 +112,6 @@ export interface FileRouteTypes {
     | '/'
     | '/aprenda'
     | '/auth'
-    | '/galeria'
     | '/sobre'
     | '/torneios'
     | '/treinos'
@@ -134,11 +123,10 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/aprenda'
     | '/auth'
-    | '/galeria'
     | '/sobre'
     | '/torneios'
     | '/treinos'
-    | '/torneios/$slug'
+    | '/torneios_/$slug'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -147,10 +135,10 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AprendaRoute: typeof AprendaRoute
   AuthRoute: typeof AuthRoute
-  GaleriaRoute: typeof GaleriaRoute
   SobreRoute: typeof SobreRoute
-  TorneiosRoute: typeof TorneiosRouteWithChildren
+  TorneiosRoute: typeof TorneiosRoute
   TreinosRoute: typeof TreinosRoute
+  TorneiosSlugRoute: typeof TorneiosSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -183,13 +171,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/galeria': {
-      id: '/galeria'
-      path: '/galeria'
-      fullPath: '/galeria'
-      preLoaderRoute: typeof GaleriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
@@ -211,12 +192,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TreinosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/torneios/$slug': {
-      id: '/torneios/$slug'
-      path: '/$slug'
+    '/torneios_/$slug': {
+      id: '/torneios_/$slug'
+      path: '/torneios/$slug'
       fullPath: '/torneios/$slug'
       preLoaderRoute: typeof TorneiosSlugRouteImport
-      parentRoute: typeof TorneiosRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -239,27 +220,15 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface TorneiosRouteChildren {
-  TorneiosSlugRoute: typeof TorneiosSlugRoute
-}
-
-const TorneiosRouteChildren: TorneiosRouteChildren = {
-  TorneiosSlugRoute: TorneiosSlugRoute,
-}
-
-const TorneiosRouteWithChildren = TorneiosRoute._addFileChildren(
-  TorneiosRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AprendaRoute: AprendaRoute,
   AuthRoute: AuthRoute,
-  GaleriaRoute: GaleriaRoute,
   SobreRoute: SobreRoute,
-  TorneiosRoute: TorneiosRouteWithChildren,
+  TorneiosRoute: TorneiosRoute,
   TreinosRoute: TreinosRoute,
+  TorneiosSlugRoute: TorneiosSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Users, Calendar, DollarSign, ArrowRight } from "lucide-react";
-import { TOURNAMENTS } from "@/lib/site-data";
+import { TOURNAMENTS, parseLocalDate } from "@/lib/site-data";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({
@@ -18,8 +18,11 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 });
 
 function AdminDashboard() {
-  const totalSpots = TOURNAMENTS.reduce((acc, t) => acc + t.divisions.reduce((d, div) => d + div.spots, 0), 0);
-  const totalRevenue = TOURNAMENTS.reduce((acc, t) => acc + t.divisions.reduce((d, div) => d + div.price * div.spots, 0), 0);
+  const totalSpots = TOURNAMENTS.reduce((acc, t) => acc + t.divisions.reduce((d, div) => d + (div.spots ?? 0), 0), 0);
+  const totalRevenue = TOURNAMENTS.reduce(
+    (acc, t) => acc + t.divisions.reduce((d, div) => d + (div.prices[0]?.price ?? 0) * (div.spots ?? 0), 0),
+    0,
+  );
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -45,7 +48,7 @@ function AdminDashboard() {
           <CardContent className="p-5">
             <Calendar className="h-6 w-6 text-buzz" />
             <p className="mt-2 text-sm text-muted-foreground">Próximo torneio</p>
-            <p className="text-lg font-bold">{new Date(TOURNAMENTS[0]?.date ?? "").toLocaleDateString("pt-BR")}</p>
+            <p className="text-lg font-bold">{TOURNAMENTS[0] ? parseLocalDate(TOURNAMENTS[0].date).toLocaleDateString("pt-BR") : "—"}</p>
           </CardContent>
         </Card>
         <Card className="border-border bg-card">
@@ -74,7 +77,7 @@ function AdminDashboard() {
               <div key={t.slug} className="flex items-center justify-between rounded-lg border border-border bg-background p-4">
                 <div>
                   <p className="font-semibold">{t.title}</p>
-                  <p className="text-xs text-muted-foreground">{new Date(t.date).toLocaleDateString("pt-BR")} — {t.location}</p>
+                  <p className="text-xs text-muted-foreground">{parseLocalDate(t.date).toLocaleDateString("pt-BR")} — {t.location}</p>
                 </div>
                 <Button asChild size="sm" variant="outline" className="border-acid text-acid hover:bg-acid/10">
                   <Link to="/torneios/$slug" params={{ slug: t.slug }}>
@@ -94,7 +97,6 @@ function AdminDashboard() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• Gerenciamento de inscrições e check-in</li>
               <li>• Cadastro e edição de torneios</li>
-              <li>• Upload de fotos na galeria</li>
               <li>• Relatórios financeiros integrados ao Stripe</li>
             </ul>
           </CardContent>

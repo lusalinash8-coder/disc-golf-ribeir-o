@@ -28,3 +28,17 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Abrir la página
+
+Para ver el sitio funcionando en tu máquina, doble clic en **`abrir-site.command`** (en la raíz del proyecto). Se abre una ventana de terminal, arranca el sitio y lo abre solo en el navegador.
+
+No cierres esa ventana mientras navegas — al cerrarla, el sitio deja de funcionar.
+
+Si prefieres hacerlo a mano por terminal:
+
+```sh
+npm run dev
+```
+
+y luego abre **http://localhost:8080** en el navegador.

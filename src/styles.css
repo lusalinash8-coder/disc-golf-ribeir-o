@@ -65,7 +65,7 @@
   --radius: 0.75rem;
 
   /* Brand palette */
-  --buzz: #c9d419;
+  --buzz: #ecd90c;
   --acid: #0ec162;
   --deep: #12132b;
   --carbon: #181818;
@@ -79,11 +79,11 @@
   --popover-foreground: #f4f4f4;
   --primary: #0ec162;
   --primary-foreground: #050505;
-  --secondary: #c9d419;
+  --secondary: #ecd90c;
   --secondary-foreground: #050505;
   --muted: #1f2937;
   --muted-foreground: #a1a1aa;
-  --accent: #c9d419;
+  --accent: #ecd90c;
   --accent-foreground: #050505;
   --destructive: #ef4444;
   --destructive-foreground: #f4f4f4;
@@ -91,7 +91,7 @@
   --input: rgba(255, 255, 255, 0.12);
   --ring: #0ec162;
   --chart-1: #0ec162;
-  --chart-2: #c9d419;
+  --chart-2: #ecd90c;
   --chart-3: #2563eb;
   --chart-4: #f97316;
   --chart-5: #8b5cf6;
@@ -114,11 +114,11 @@
   --popover-foreground: #f4f4f4;
   --primary: #0ec162;
   --primary-foreground: #050505;
-  --secondary: #c9d419;
+  --secondary: #ecd90c;
   --secondary-foreground: #050505;
   --muted: #1f2937;
   --muted-foreground: #a1a1aa;
-  --accent: #c9d419;
+  --accent: #ecd90c;
   --accent-foreground: #050505;
   --destructive: #ef4444;
   --destructive-foreground: #f4f4f4;
@@ -126,7 +126,7 @@
   --input: rgba(255, 255, 255, 0.12);
   --ring: #0ec162;
   --chart-1: #0ec162;
-  --chart-2: #c9d419;
+  --chart-2: #ecd90c;
   --chart-3: #2563eb;
   --chart-4: #f97316;
   --chart-5: #8b5cf6;
@@ -163,7 +163,23 @@
   }
 }
 
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @layer utilities {
+  .animate-marquee {
+    animation: marquee 70s linear infinite;
+  }
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
   .text-buzz {
     color: var(--color-buzz);
   }
