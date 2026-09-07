@@ -3,7 +3,7 @@ import uspLogo from "@/assets/partners/usp.png";
 import ajedLogo from "@/assets/partners/ajed.png";
 import discGolfBrasilLogo from "@/assets/partners/disc-golf-brasil.png";
 import pdgaLogo from "@/assets/partners/pdga.png";
-import segundoTorneioLogo from "@/assets/torneios/2torneio-logo.png";
+import segundoTorneioLogo from "@/assets/torneios/2torneio-logo-novo.png";
 import ribeiraoOpen2025Logo from "@/assets/torneios/ribeirao-preto-open-2025/logo.png";
 import ribeiraoOpen2025Foto01 from "@/assets/torneios/ribeirao-preto-open-2025/foto-01.jpg";
 import ribeiraoOpen2025Foto02 from "@/assets/torneios/ribeirao-preto-open-2025/foto-02.jpg";

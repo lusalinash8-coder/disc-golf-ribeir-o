@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TRAININGS, TOURNAMENTS, SITE } from "@/lib/site-data";
-import hero from "@/assets/hero.jpg";
+import hero from "@/assets/fondoInicio2.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,10 +36,10 @@ function HomePage() {
         <div className="absolute inset-0">
           <img
             src={hero}
-            alt="Cesta de Disc Golf ao pôr do sol"
+            alt="Cesta de Disc Golf com o símbolo da Turma, na floresta ao entardecer"
             className="h-full w-full object-cover"
-            width={1920}
-            height={1080}
+            width={1536}
+            height={1024}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-background/35" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />

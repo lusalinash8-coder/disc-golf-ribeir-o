@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { TournamentLogoTile } from "@/components/TournamentLogoTile";
+import { PhotoLightbox } from "@/components/PhotoLightbox";
+import { PhotoThumbRow } from "@/components/PhotoThumbRow";
 import { parseLocalDate, TOURNAMENT_DEFAULT_SPONSORS, type PastTournament } from "@/lib/site-data";
 
 function formatDateRange(date: string, endDate?: string) {
@@ -20,7 +22,9 @@ function formatDateRange(date: string, endDate?: string) {
 
 export function PastTournamentCard({ tournament: t }: { tournament: PastTournament }) {
   const [open, setOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const sponsors = t.sponsors ?? TOURNAMENT_DEFAULT_SPONSORS;
+  const photos = t.photos ?? [];
 
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -61,17 +65,8 @@ export function PastTournamentCard({ tournament: t }: { tournament: PastTourname
               ))}
             </div>
           )}
-          {t.photos && t.photos.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {t.photos.map((photo, i) => (
-                <img
-                  key={photo}
-                  src={photo}
-                  alt={`${t.title} — foto ${i + 1}`}
-                  className="aspect-square w-full rounded-lg object-cover"
-                />
-              ))}
-            </div>
+          {photos.length > 0 ? (
+            <PhotoThumbRow photos={photos} title={t.title} onOpen={setLightboxIndex} />
           ) : (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <ImageOff className="h-4 w-4" /> Fotos em breve.
@@ -79,6 +74,8 @@ export function PastTournamentCard({ tournament: t }: { tournament: PastTourname
           )}
         </div>
       </CollapsibleContent>
+
+      <PhotoLightbox photos={photos} index={lightboxIndex} onIndexChange={setLightboxIndex} title={t.title} />
 
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border px-6 py-4 sm:px-8">
         <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Apoio e parceria:</span>
