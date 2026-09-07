@@ -14,84 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      content_blocks: {
-        Row: {
-          id: string
-          section: string
-          title: string
-          body: string
-          icon: string | null
-          sort_order: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          section: string
-          title: string
-          body: string
-          icon?: string | null
-          sort_order?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          section?: string
-          title?: string
-          body?: string
-          icon?: string | null
-          sort_order?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      courses: {
-        Row: {
-          id: string
-          slug: string
-          name: string
-          full_name: string
-          holes: number | null
-          par: number | null
-          lat: number | null
-          lng: number | null
-          udisc_url: string | null
-          map_image_url: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          slug: string
-          name: string
-          full_name: string
-          holes?: number | null
-          par?: number | null
-          lat?: number | null
-          lng?: number | null
-          udisc_url?: string | null
-          map_image_url?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          slug?: string
-          name?: string
-          full_name?: string
-          holes?: number | null
-          par?: number | null
-          lat?: number | null
-          lng?: number | null
-          udisc_url?: string | null
-          map_image_url?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       division_prices: {
         Row: {
           id: string
@@ -123,33 +45,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      faq: {
-        Row: {
-          id: string
-          question: string
-          answer: string
-          sort_order: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          question: string
-          answer: string
-          sort_order?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          question?: string
-          answer?: string
-          sort_order?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
       }
       partners: {
         Row: {
@@ -298,48 +193,6 @@ export type Database = {
           },
         ]
       }
-      site_settings: {
-        Row: {
-          id: boolean
-          name: string
-          tagline: string
-          description: string
-          email: string
-          instagram: string | null
-          whatsapp: string | null
-          city: string
-          director: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: boolean
-          name: string
-          tagline: string
-          description: string
-          email: string
-          instagram?: string | null
-          whatsapp?: string | null
-          city: string
-          director?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: boolean
-          name?: string
-          tagline?: string
-          description?: string
-          email?: string
-          instagram?: string | null
-          whatsapp?: string | null
-          city?: string
-          director?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       tournament_divisions: {
         Row: {
           id: string
@@ -391,7 +244,6 @@ export type Database = {
           prices_approximate: boolean
           pdga_link: string | null
           sponsor_partner_ids: string[] | null
-          course_id: string | null
           created_at: string
           updated_at: string
         }
@@ -410,7 +262,6 @@ export type Database = {
           prices_approximate?: boolean
           pdga_link?: string | null
           sponsor_partner_ids?: string[] | null
-          course_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -429,19 +280,10 @@ export type Database = {
           prices_approximate?: boolean
           pdga_link?: string | null
           sponsor_partner_ids?: string[] | null
-          course_id?: string | null
           created_at?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "tournaments_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       trainings: {
         Row: {

@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays, Clock, MapPin, Users, CheckCircle2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { TRAININGS, SITE, PARTNERS, USP_COURSE } from "@/lib/site-data";
+import { SITE, PARTNERS, USP_COURSE } from "@/lib/site-data";
+import { fetchTrainings } from "@/lib/trainings";
 import treinosImage from "@/assets/TreinosDG.png";
 import uspMapImage from "@/assets/usp-course-map.png";
 
@@ -22,10 +23,13 @@ export const Route = createFileRoute("/treinos")({
       { name: "twitter:image", content: treinosImage },
     ],
   }),
+  loader: async () => ({ trainings: await fetchTrainings() }),
   component: TrainingsPage,
 });
 
 function TrainingsPage() {
+  const { trainings } = Route.useLoaderData();
+
   return (
     <>
       <section className="relative overflow-hidden py-20">
@@ -43,7 +47,7 @@ function TrainingsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="space-y-6">
-          {TRAININGS.map((t) => (
+          {trainings.map((t) => (
             <div key={t.id} className="overflow-hidden rounded-2xl border border-border bg-card">
               <div className="grid gap-8 p-8 sm:p-10 lg:grid-cols-[1.4fr_1fr] lg:items-center">
                 <div>

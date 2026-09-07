@@ -4,8 +4,9 @@ import { ArrowRight, Calendar, MapPin, Users, Trophy, ChevronRight } from "lucid
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TRAININGS, SITE } from "@/lib/site-data";
+import { SITE } from "@/lib/site-data";
 import { fetchNextTournament } from "@/lib/tournaments";
+import { fetchOpenTraining } from "@/lib/trainings";
 import hero from "@/assets/fondoInicio2.jpg";
 
 export const Route = createFileRoute("/")({
@@ -20,13 +21,18 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: hero },
     ],
   }),
-  loader: async () => ({ nextTournament: await fetchNextTournament() }),
+  loader: async () => {
+    const [nextTournament, openTraining] = await Promise.all([
+      fetchNextTournament(),
+      fetchOpenTraining(),
+    ]);
+    return { nextTournament, openTraining };
+  },
   component: HomePage,
 });
 
 function HomePage() {
-  const { nextTournament } = Route.useLoaderData();
-  const openTraining = TRAININGS.find((t) => t.status === "active");
+  const { nextTournament, openTraining } = Route.useLoaderData();
 
   return (
     <>

@@ -91,21 +91,6 @@ export type Training = {
   confirmed: boolean;
 };
 
-export const TRAININGS: Training[] = [
-  {
-    id: "treino-semanal",
-    title: "Treino aberto semanal",
-    day: "Quartas-feiras",
-    time: "15:00",
-    location: "Campo USP Ribeirão Preto",
-    level: "Todos os níveis",
-    description:
-      "Encontro informal para treinar arremessos, conhecer a cesta e trocar experiências. Leve seu disco ou peça um emprestado com a gente.",
-    status: "active",
-    confirmed: true,
-  },
-];
-
 export const USP_COURSE = {
   name: "Campo USP Ribeirão Preto",
   fullName: "Disc Golf USP Ribeirão Preto",
