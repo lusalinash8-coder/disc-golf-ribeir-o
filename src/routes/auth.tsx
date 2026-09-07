@@ -1,13 +1,11 @@
 import { createFileRoute, useRouter, redirect } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Mail, Lock, Loader2 } from "lucide-react";
 
@@ -56,16 +54,6 @@ function AuthPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogle = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result.error) {
-      toast.error(result.error.message);
-    }
-    // If redirected, the browser will navigate away; on return, session is set.
   };
 
   return (
@@ -120,16 +108,6 @@ function AuthPage() {
               </Button>
             </TabsContent>
           </Tabs>
-
-          <div className="my-4 flex items-center gap-2">
-            <Separator className="flex-1" />
-            <span className="text-xs text-muted-foreground">ou</span>
-            <Separator className="flex-1" />
-          </div>
-
-          <Button variant="outline" onClick={handleGoogle} className="w-full border-border bg-background hover:bg-muted">
-            Entrar com Google
-          </Button>
         </CardContent>
       </Card>
     </section>
