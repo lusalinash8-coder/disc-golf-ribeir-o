@@ -3,31 +3,6 @@ import uspLogo from "@/assets/partners/usp.png";
 import ajedLogo from "@/assets/partners/ajed.png";
 import discGolfBrasilLogo from "@/assets/partners/disc-golf-brasil.png";
 import pdgaLogo from "@/assets/partners/pdga.png";
-import segundoTorneioLogo from "@/assets/torneios/2torneio-logo-novo.png";
-import ribeiraoOpen2025Logo from "@/assets/torneios/ribeirao-preto-open-2025/logo.png";
-import ribeiraoOpen2025Foto01 from "@/assets/torneios/ribeirao-preto-open-2025/foto-01.jpg";
-import ribeiraoOpen2025Foto02 from "@/assets/torneios/ribeirao-preto-open-2025/foto-02.jpg";
-import ribeiraoOpen2025Foto03 from "@/assets/torneios/ribeirao-preto-open-2025/foto-03.jpg";
-import ribeiraoOpen2025Foto04 from "@/assets/torneios/ribeirao-preto-open-2025/foto-04.jpg";
-import ribeiraoOpen2025Foto05 from "@/assets/torneios/ribeirao-preto-open-2025/foto-05.jpg";
-import ribeiraoOpen2025Foto06 from "@/assets/torneios/ribeirao-preto-open-2025/foto-06.jpg";
-import ribeiraoOpen2025Foto07 from "@/assets/torneios/ribeirao-preto-open-2025/foto-07.jpg";
-import ribeiraoOpen2025Foto08 from "@/assets/torneios/ribeirao-preto-open-2025/foto-08.jpg";
-import ribeiraoOpen2025Foto09 from "@/assets/torneios/ribeirao-preto-open-2025/foto-09.jpg";
-import ribeiraoOpen2025Foto10 from "@/assets/torneios/ribeirao-preto-open-2025/foto-10.jpg";
-
-const ribeiraoOpen2025Photos = [
-  ribeiraoOpen2025Foto01,
-  ribeiraoOpen2025Foto02,
-  ribeiraoOpen2025Foto03,
-  ribeiraoOpen2025Foto04,
-  ribeiraoOpen2025Foto05,
-  ribeiraoOpen2025Foto06,
-  ribeiraoOpen2025Foto07,
-  ribeiraoOpen2025Foto08,
-  ribeiraoOpen2025Foto09,
-  ribeiraoOpen2025Foto10,
-];
 
 /** Converte uma data "YYYY-MM-DD" em Date local, evitando o deslocamento de fuso do `new Date(string)`. */
 export function parseLocalDate(dateStr: string) {
@@ -173,53 +148,6 @@ export type Tournament = {
   sponsors?: Partner[];
 };
 
-export const TOURNAMENTS: Tournament[] = [
-  {
-    slug: "2-torneio-disc-golf",
-    title: "2º Ribeirão Preto Open Invocado por Shaman Disc Golf – Campeonato Nacional",
-    date: "2026-10-10",
-    endDate: "2026-10-11",
-    registrationDeadline: "2026-10-05",
-    registrationDeadlineConfirmed: false,
-    location: "Campo USP Ribeirão Preto",
-    description:
-      "A segunda edição do nosso torneio chega com certificação PDGA! Dois dias de disputa no campo da USP, reunindo jogadores de todos os níveis nas divisões MA1, MA2, MA40 e FA1. Vagas limitadas — garanta a sua e venha fazer parte dessa edição.",
-    image: segundoTorneioLogo,
-    divisions: [
-      {
-        name: "MA1",
-        prices: [
-          { label: "Com disco", price: 150 },
-          { label: "Sem disco", price: 120 },
-        ],
-      },
-      {
-        name: "MA40",
-        prices: [
-          { label: "Com disco", price: 150 },
-          { label: "Sem disco", price: 120 },
-        ],
-      },
-      {
-        name: "MA2",
-        prices: [
-          { label: "Com disco", price: 120 },
-          { label: "Sem disco", price: 100 },
-        ],
-      },
-      {
-        name: "FA1",
-        prices: [
-          { label: "Com disco", price: 120 },
-          { label: "Sem disco", price: 100 },
-        ],
-      },
-    ],
-    status: "open",
-    pricesApproximate: true,
-  },
-];
-
 export type PastTournament = {
   slug: string;
   title: string;
@@ -232,19 +160,6 @@ export type PastTournament = {
   /** logos de apoio exibidos na página do torneio; se omitido, usa TOURNAMENT_DEFAULT_SPONSORS */
   sponsors?: Partner[];
 };
-
-export const PAST_TOURNAMENTS: PastTournament[] = [
-  {
-    slug: "ribeirao-preto-open-2025",
-    title: "Ribeirão Preto Open Disc Golf 2025",
-    date: "2025-11-29",
-    endDate: "2025-11-30",
-    location: SITE.city,
-    image: ribeiraoOpen2025Logo,
-    divisions: ["Profissional", "MP40", "Amador", "Feminino"],
-    photos: ribeiraoOpen2025Photos,
-  },
-];
 
 export const FAQ = [
   {

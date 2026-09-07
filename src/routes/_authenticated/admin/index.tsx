@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Users, Calendar, DollarSign, ArrowRight } from "lucide-react";
-import { TOURNAMENTS, parseLocalDate } from "@/lib/site-data";
+import { parseLocalDate } from "@/lib/site-data";
+import { fetchTournaments } from "@/lib/tournaments";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({
@@ -14,12 +15,15 @@ export const Route = createFileRoute("/_authenticated/admin/")({
       { property: "og:type", content: "website" },
     ],
   }),
+  loader: async () => ({ tournaments: await fetchTournaments() }),
   component: AdminDashboard,
 });
 
 function AdminDashboard() {
-  const totalSpots = TOURNAMENTS.reduce((acc, t) => acc + t.divisions.reduce((d, div) => d + (div.spots ?? 0), 0), 0);
-  const totalRevenue = TOURNAMENTS.reduce(
+  const { tournaments } = Route.useLoaderData();
+
+  const totalSpots = tournaments.reduce((acc, t) => acc + t.divisions.reduce((d, div) => d + (div.spots ?? 0), 0), 0);
+  const totalRevenue = tournaments.reduce(
     (acc, t) => acc + t.divisions.reduce((d, div) => d + (div.prices[0]?.price ?? 0) * (div.spots ?? 0), 0),
     0,
   );
@@ -41,14 +45,14 @@ function AdminDashboard() {
           <CardContent className="p-5">
             <Trophy className="h-6 w-6 text-acid" />
             <p className="mt-2 text-sm text-muted-foreground">Torneios ativos</p>
-            <p className="text-2xl font-bold">{TOURNAMENTS.length}</p>
+            <p className="text-2xl font-bold">{tournaments.length}</p>
           </CardContent>
         </Card>
         <Card className="border-border bg-card">
           <CardContent className="p-5">
             <Calendar className="h-6 w-6 text-buzz" />
             <p className="mt-2 text-sm text-muted-foreground">Próximo torneio</p>
-            <p className="text-lg font-bold">{TOURNAMENTS[0] ? parseLocalDate(TOURNAMENTS[0].date).toLocaleDateString("pt-BR") : "—"}</p>
+            <p className="text-lg font-bold">{tournaments[0] ? parseLocalDate(tournaments[0].date).toLocaleDateString("pt-BR") : "—"}</p>
           </CardContent>
         </Card>
         <Card className="border-border bg-card">
@@ -73,7 +77,7 @@ function AdminDashboard() {
             <CardTitle>Torneios</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {TOURNAMENTS.map((t) => (
+            {tournaments.map((t) => (
               <div key={t.slug} className="flex items-center justify-between rounded-lg border border-border bg-background p-4">
                 <div>
                   <p className="font-semibold">{t.title}</p>

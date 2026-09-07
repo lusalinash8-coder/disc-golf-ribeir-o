@@ -7,7 +7,8 @@ import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { TournamentLogoTile } from "@/components/TournamentLogoTile";
 import { TournamentRegisterForm } from "@/components/TournamentRegisterForm";
 import { statusLabel, statusBadgeClass, formatDateRange } from "@/components/TournamentCard";
-import { TOURNAMENTS, USP_COURSE, SITE, parseLocalDate, TOURNAMENT_DEFAULT_SPONSORS } from "@/lib/site-data";
+import { USP_COURSE, SITE, parseLocalDate, TOURNAMENT_DEFAULT_SPONSORS } from "@/lib/site-data";
+import { fetchTournamentBySlug } from "@/lib/tournaments";
 import hero from "@/assets/hero.jpg";
 import uspMapImage from "@/assets/usp-course-map.png";
 import okyPhoto from "@/assets/sobre/Oky.jpg";
@@ -15,8 +16,12 @@ import okyPhoto from "@/assets/sobre/Oky.jpg";
 const GOOGLE_MAPS_URL = `https://www.google.com/maps?q=${USP_COURSE.lat},${USP_COURSE.lng}`;
 
 export const Route = createFileRoute("/torneios_/$slug")({
-  head: ({ params }) => {
-    const t = TOURNAMENTS.find((x) => x.slug === params.slug);
+  loader: async ({ params }) => {
+    const tournament = await fetchTournamentBySlug(params.slug);
+    if (!tournament) throw notFound();
+    return tournament;
+  },
+  head: ({ loaderData: t }) => {
     return {
       meta: [
         { title: t ? `${t.title} — A Turma do Disc Golf` : "Torneio — A Turma do Disc Golf" },
@@ -33,9 +38,7 @@ export const Route = createFileRoute("/torneios_/$slug")({
 });
 
 function TournamentDetailPage() {
-  const { slug } = Route.useParams();
-  const tournament = TOURNAMENTS.find((t) => t.slug === slug);
-  if (!tournament) throw notFound();
+  const tournament = Route.useLoaderData();
 
   const isAtUsp = tournament.location === USP_COURSE.name;
   const sponsors = tournament.sponsors ?? TOURNAMENT_DEFAULT_SPONSORS;

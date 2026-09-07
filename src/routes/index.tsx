@@ -4,7 +4,8 @@ import { ArrowRight, Calendar, MapPin, Users, Trophy, ChevronRight } from "lucid
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TRAININGS, TOURNAMENTS, SITE } from "@/lib/site-data";
+import { TRAININGS, SITE } from "@/lib/site-data";
+import { fetchNextTournament } from "@/lib/tournaments";
 import hero from "@/assets/fondoInicio2.jpg";
 
 export const Route = createFileRoute("/")({
@@ -19,14 +20,12 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: hero },
     ],
   }),
+  loader: async () => ({ nextTournament: await fetchNextTournament() }),
   component: HomePage,
 });
 
 function HomePage() {
-  const today = new Date().toISOString().slice(0, 10);
-  const nextTournament = TOURNAMENTS
-    .filter((t) => t.date >= today)
-    .sort((a, b) => a.date.localeCompare(b.date))[0];
+  const { nextTournament } = Route.useLoaderData();
   const openTraining = TRAININGS.find((t) => t.status === "active");
 
   return (

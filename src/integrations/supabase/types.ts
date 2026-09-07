@@ -14,7 +14,483 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      content_blocks: {
+        Row: {
+          id: string
+          section: string
+          title: string
+          body: string
+          icon: string | null
+          sort_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          section: string
+          title: string
+          body: string
+          icon?: string | null
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          section?: string
+          title?: string
+          body?: string
+          icon?: string | null
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          id: string
+          slug: string
+          name: string
+          full_name: string
+          holes: number | null
+          par: number | null
+          lat: number | null
+          lng: number | null
+          udisc_url: string | null
+          map_image_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          name: string
+          full_name: string
+          holes?: number | null
+          par?: number | null
+          lat?: number | null
+          lng?: number | null
+          udisc_url?: string | null
+          map_image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          name?: string
+          full_name?: string
+          holes?: number | null
+          par?: number | null
+          lat?: number | null
+          lng?: number | null
+          udisc_url?: string | null
+          map_image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      division_prices: {
+        Row: {
+          id: string
+          division_id: string
+          label: string
+          price: number
+          sort_order: number
+        }
+        Insert: {
+          id?: string
+          division_id: string
+          label: string
+          price: number
+          sort_order?: number
+        }
+        Update: {
+          id?: string
+          division_id?: string
+          label?: string
+          price?: number
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "division_prices_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "tournament_divisions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      faq: {
+        Row: {
+          id: string
+          question: string
+          answer: string
+          sort_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          question: string
+          answer: string
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          question?: string
+          answer?: string
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      partners: {
+        Row: {
+          id: string
+          slug: string
+          name: string
+          full_name: string
+          logo_url: string | null
+          is_partner: boolean
+          is_default_sponsor: boolean
+          sort_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          name: string
+          full_name: string
+          logo_url?: string | null
+          is_partner?: boolean
+          is_default_sponsor?: boolean
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          name?: string
+          full_name?: string
+          logo_url?: string | null
+          is_partner?: boolean
+          is_default_sponsor?: boolean
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      past_tournaments: {
+        Row: {
+          id: string
+          slug: string
+          title: string
+          date: string
+          end_date: string | null
+          location: string
+          image_url: string | null
+          divisions: string[]
+          photos: string[]
+          sponsor_partner_ids: string[] | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title: string
+          date: string
+          end_date?: string | null
+          location: string
+          image_url?: string | null
+          divisions?: string[]
+          photos?: string[]
+          sponsor_partner_ids?: string[] | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          title?: string
+          date?: string
+          end_date?: string | null
+          location?: string
+          image_url?: string | null
+          divisions?: string[]
+          photos?: string[]
+          sponsor_partner_ids?: string[] | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          id: string
+          tournament_id: string
+          division_id: string | null
+          division_name: string
+          price_label: string
+          price: number
+          full_name: string
+          email: string
+          phone: string
+          status: string
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          tournament_id: string
+          division_id?: string | null
+          division_name: string
+          price_label: string
+          price: number
+          full_name: string
+          email: string
+          phone: string
+          status?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          tournament_id?: string
+          division_id?: string | null
+          division_name?: string
+          price_label?: string
+          price?: number
+          full_name?: string
+          email?: string
+          phone?: string
+          status?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "tournament_divisions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_settings: {
+        Row: {
+          id: boolean
+          name: string
+          tagline: string
+          description: string
+          email: string
+          instagram: string | null
+          whatsapp: string | null
+          city: string
+          director: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          name: string
+          tagline: string
+          description: string
+          email: string
+          instagram?: string | null
+          whatsapp?: string | null
+          city: string
+          director?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          name?: string
+          tagline?: string
+          description?: string
+          email?: string
+          instagram?: string | null
+          whatsapp?: string | null
+          city?: string
+          director?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tournament_divisions: {
+        Row: {
+          id: string
+          tournament_id: string
+          name: string
+          spots: number | null
+          sort_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tournament_id: string
+          name: string
+          spots?: number | null
+          sort_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          tournament_id?: string
+          name?: string
+          spots?: number | null
+          sort_order?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_divisions_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournaments: {
+        Row: {
+          id: string
+          slug: string
+          title: string
+          date: string
+          end_date: string | null
+          registration_deadline: string
+          registration_deadline_confirmed: boolean
+          location: string
+          description: string
+          image_url: string | null
+          status: string
+          prices_approximate: boolean
+          pdga_link: string | null
+          sponsor_partner_ids: string[] | null
+          course_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title: string
+          date: string
+          end_date?: string | null
+          registration_deadline: string
+          registration_deadline_confirmed?: boolean
+          location: string
+          description: string
+          image_url?: string | null
+          status?: string
+          prices_approximate?: boolean
+          pdga_link?: string | null
+          sponsor_partner_ids?: string[] | null
+          course_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          title?: string
+          date?: string
+          end_date?: string | null
+          registration_deadline?: string
+          registration_deadline_confirmed?: boolean
+          location?: string
+          description?: string
+          image_url?: string | null
+          status?: string
+          prices_approximate?: boolean
+          pdga_link?: string | null
+          sponsor_partner_ids?: string[] | null
+          course_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournaments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trainings: {
+        Row: {
+          id: string
+          slug: string
+          title: string
+          day: string
+          time: string
+          location: string
+          level: string
+          description: string
+          status: string
+          confirmed: boolean
+          image_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title: string
+          day: string
+          time: string
+          location: string
+          level: string
+          description: string
+          status?: string
+          confirmed?: boolean
+          image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          title?: string
+          day?: string
+          time?: string
+          location?: string
+          level?: string
+          description?: string
+          status?: string
+          confirmed?: boolean
+          image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
