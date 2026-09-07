@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SITE, NAV } from "@/lib/site-data";
 import logo from "@/assets/logo.png";
@@ -29,6 +29,16 @@ export function Header() {
           ))}
           <Button asChild className="ml-4 bg-primary text-primary-foreground hover:bg-primary/90">
             <Link to="/torneios">Inscreva-se</Link>
+          </Button>
+          <Button asChild variant="ghost" size="icon" className="ml-1" aria-label="Painel administrativo">
+            {/* Plain anchor, not router Link: /admin redirects unauthenticated
+                users client-side (the _authenticated layout has ssr: false), so
+                a Link's active-state would be computed differently on the server
+                (still "/admin") than after client hydration redirects to "/auth",
+                crashing hydration. A plain <a> has no active-state to mismatch. */}
+            <a href="/admin">
+              <User className="h-5 w-5" />
+            </a>
           </Button>
         </nav>
 
@@ -60,6 +70,11 @@ export function Header() {
               <Link to="/torneios" onClick={() => setOpen(false)}>
                 Inscreva-se em um torneio
               </Link>
+            </Button>
+            <Button asChild variant="outline" className="mt-2 w-full border-border bg-background">
+              <a href="/admin" onClick={() => setOpen(false)}>
+                <User className="mr-2 h-4 w-4" /> Painel administrativo
+              </a>
             </Button>
           </nav>
         </div>
