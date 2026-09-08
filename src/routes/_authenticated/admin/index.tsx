@@ -1,14 +1,20 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trophy, Users, Calendar, DollarSign, ArrowRight, Dumbbell, Clock, MapPin, LogOut, Loader2 } from "lucide-react";
+import {
+  Trophy,
+  Users,
+  Calendar,
+  DollarSign,
+  ArrowRight,
+  Dumbbell,
+  Clock,
+  MapPin,
+} from "lucide-react";
 import { parseLocalDate } from "@/lib/site-data";
 import { fetchTournaments } from "@/lib/tournaments";
 import { fetchTrainings } from "@/lib/trainings";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({
@@ -29,48 +35,22 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 
 function AdminDashboard() {
   const { tournaments, trainings } = Route.useLoaderData();
-  const router = useRouter();
-  const [loggingOut, setLoggingOut] = useState(false);
 
-  const totalSpots = tournaments.reduce((acc, t) => acc + t.divisions.reduce((d, div) => d + (div.spots ?? 0), 0), 0);
+  const totalSpots = tournaments.reduce(
+    (acc, t) => acc + t.divisions.reduce((d, div) => d + (div.spots ?? 0), 0),
+    0,
+  );
   const totalRevenue = tournaments.reduce(
-    (acc, t) => acc + t.divisions.reduce((d, div) => d + (div.prices[0]?.price ?? 0) * (div.spots ?? 0), 0),
+    (acc, t) =>
+      acc + t.divisions.reduce((d, div) => d + (div.prices[0]?.price ?? 0) * (div.spots ?? 0), 0),
     0,
   );
 
-  const handleLogout = async () => {
-    setLoggingOut(true);
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      router.navigate({ to: "/auth" });
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao sair");
-      setLoggingOut(false);
-    }
-  };
-
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Painel da Turma</h1>
-          <p className="text-muted-foreground">Visão geral dos torneios e inscrições.</p>
-        </div>
-        <div className="flex gap-2">
-          <Button asChild variant="outline" className="border-border bg-background">
-            <Link to="/">Voltar ao site</Link>
-          </Button>
-          <Button
-            variant="outline"
-            className="border-border bg-background text-destructive hover:bg-destructive/10 hover:text-destructive"
-            onClick={handleLogout}
-            disabled={loggingOut}
-          >
-            {loggingOut ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
-            Sair
-          </Button>
-        </div>
+    <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Painel da Turma</h1>
+        <p className="text-muted-foreground">Visão geral dos torneios e inscrições.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -85,7 +65,11 @@ function AdminDashboard() {
           <CardContent className="p-5">
             <Calendar className="h-6 w-6 text-buzz" />
             <p className="mt-2 text-sm text-muted-foreground">Próximo torneio</p>
-            <p className="text-lg font-bold">{tournaments[0] ? parseLocalDate(tournaments[0].date).toLocaleDateString("pt-BR") : "—"}</p>
+            <p className="text-lg font-bold">
+              {tournaments[0]
+                ? parseLocalDate(tournaments[0].date).toLocaleDateString("pt-BR")
+                : "—"}
+            </p>
           </CardContent>
         </Card>
         <Card className="border-border bg-card">
@@ -106,7 +90,9 @@ function AdminDashboard() {
           <CardContent className="p-5">
             <Dumbbell className="h-6 w-6 text-acid" />
             <p className="mt-2 text-sm text-muted-foreground">Treinos ativos</p>
-            <p className="text-2xl font-bold">{trainings.filter((t) => t.status === "active").length}</p>
+            <p className="text-2xl font-bold">
+              {trainings.filter((t) => t.status === "active").length}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -117,14 +103,26 @@ function AdminDashboard() {
             <CardTitle>Torneios</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {tournaments.length === 0 && <p className="text-sm text-muted-foreground">Nenhum torneio cadastrado.</p>}
+            {tournaments.length === 0 && (
+              <p className="text-sm text-muted-foreground">Nenhum torneio cadastrado.</p>
+            )}
             {tournaments.map((t) => (
-              <div key={t.slug} className="flex items-center justify-between rounded-lg border border-border bg-background p-4">
+              <div
+                key={t.slug}
+                className="flex items-center justify-between rounded-lg border border-border bg-background p-4"
+              >
                 <div>
                   <p className="font-semibold">{t.title}</p>
-                  <p className="text-xs text-muted-foreground">{parseLocalDate(t.date).toLocaleDateString("pt-BR")} — {t.location}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {parseLocalDate(t.date).toLocaleDateString("pt-BR")} — {t.location}
+                  </p>
                 </div>
-                <Button asChild size="sm" variant="outline" className="border-acid text-acid hover:bg-acid/10">
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="border-acid text-acid hover:bg-acid/10"
+                >
                   <Link to="/torneios/$slug" params={{ slug: t.slug }}>
                     Ver <ArrowRight className="ml-1 h-3 w-3" />
                   </Link>
@@ -139,38 +137,36 @@ function AdminDashboard() {
             <CardTitle>Treinos</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {trainings.length === 0 && <p className="text-sm text-muted-foreground">Nenhum treino cadastrado.</p>}
+            {trainings.length === 0 && (
+              <p className="text-sm text-muted-foreground">Nenhum treino cadastrado.</p>
+            )}
             {trainings.map((t) => (
               <div key={t.id} className="rounded-lg border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
                   <p className="font-semibold">{t.title}</p>
-                  <Badge variant={t.status === "active" ? "default" : "secondary"} className={t.status === "active" ? "bg-acid text-background" : ""}>
+                  <Badge
+                    variant={t.status === "active" ? "default" : "secondary"}
+                    className={t.status === "active" ? "bg-acid text-background" : ""}
+                  >
                     {t.status === "active" ? "Ativo" : "Suspenso"}
                   </Badge>
                 </div>
                 <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" /> {t.day}</span>
-                  <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {t.time}</span>
-                  <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" /> {t.location}</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Calendar className="h-3 w-3" /> {t.day}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Clock className="h-3 w-3" /> {t.time}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="h-3 w-3" /> {t.location}
+                  </span>
                 </p>
               </div>
             ))}
           </CardContent>
         </Card>
       </div>
-
-      <Card className="mt-6 border-border bg-card">
-        <CardHeader>
-          <CardTitle>Em breve no painel</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• Gerenciamento de inscrições e check-in</li>
-            <li>• Cadastro e edição de torneios e treinos</li>
-            <li>• Relatórios financeiros integrados ao Stripe</li>
-          </ul>
-        </CardContent>
-      </Card>
     </section>
   );
 }

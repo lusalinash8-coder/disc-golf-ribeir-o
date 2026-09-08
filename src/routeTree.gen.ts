@@ -16,8 +16,13 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TorneiosRouteImport } from './routes/torneios'
 import { Route as TreinosRouteImport } from './routes/treinos'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as TorneiosSlugRouteImport } from './routes/torneios_.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin/financeiro'
+import { Route as AuthenticatedAdminInscricoesRouteImport } from './routes/_authenticated/admin/inscricoes'
+import { Route as AuthenticatedAdminTorneiosRouteImport } from './routes/_authenticated/admin/torneios'
+import { Route as AuthenticatedAdminTreinosRouteImport } from './routes/_authenticated/admin/treinos'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -53,16 +58,45 @@ const TreinosRoute = TreinosRouteImport.update({
   path: '/treinos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const TorneiosSlugRoute = TorneiosSlugRouteImport.update({
   id: '/torneios_/$slug',
   path: '/torneios/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminFinanceiroRoute =
+  AuthenticatedAdminFinanceiroRouteImport.update({
+    id: '/financeiro',
+    path: '/financeiro',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminInscricoesRoute =
+  AuthenticatedAdminInscricoesRouteImport.update({
+    id: '/inscricoes',
+    path: '/inscricoes',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminTorneiosRoute =
+  AuthenticatedAdminTorneiosRouteImport.update({
+    id: '/torneios',
+    path: '/torneios',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminTreinosRoute =
+  AuthenticatedAdminTreinosRouteImport.update({
+    id: '/treinos',
+    path: '/treinos',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,7 +105,12 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/torneios': typeof TorneiosRoute
   '/treinos': typeof TreinosRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/torneios/$slug': typeof TorneiosSlugRoute
+  '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
+  '/admin/inscricoes': typeof AuthenticatedAdminInscricoesRoute
+  '/admin/torneios': typeof AuthenticatedAdminTorneiosRoute
+  '/admin/treinos': typeof AuthenticatedAdminTreinosRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -82,6 +121,10 @@ export interface FileRoutesByTo {
   '/torneios': typeof TorneiosRoute
   '/treinos': typeof TreinosRoute
   '/torneios/$slug': typeof TorneiosSlugRoute
+  '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
+  '/admin/inscricoes': typeof AuthenticatedAdminInscricoesRoute
+  '/admin/torneios': typeof AuthenticatedAdminTorneiosRoute
+  '/admin/treinos': typeof AuthenticatedAdminTreinosRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -93,7 +136,12 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/torneios': typeof TorneiosRoute
   '/treinos': typeof TreinosRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/torneios_/$slug': typeof TorneiosSlugRoute
+  '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
+  '/_authenticated/admin/inscricoes': typeof AuthenticatedAdminInscricoesRoute
+  '/_authenticated/admin/torneios': typeof AuthenticatedAdminTorneiosRoute
+  '/_authenticated/admin/treinos': typeof AuthenticatedAdminTreinosRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -105,7 +153,12 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/torneios'
     | '/treinos'
+    | '/admin'
     | '/torneios/$slug'
+    | '/admin/financeiro'
+    | '/admin/inscricoes'
+    | '/admin/torneios'
+    | '/admin/treinos'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -116,6 +169,10 @@ export interface FileRouteTypes {
     | '/torneios'
     | '/treinos'
     | '/torneios/$slug'
+    | '/admin/financeiro'
+    | '/admin/inscricoes'
+    | '/admin/torneios'
+    | '/admin/treinos'
     | '/admin'
   id:
     | '__root__'
@@ -126,7 +183,12 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/torneios'
     | '/treinos'
+    | '/_authenticated/admin'
     | '/torneios_/$slug'
+    | '/_authenticated/admin/financeiro'
+    | '/_authenticated/admin/inscricoes'
+    | '/_authenticated/admin/torneios'
+    | '/_authenticated/admin/treinos'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -192,6 +254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TreinosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/torneios_/$slug': {
       id: '/torneios_/$slug'
       path: '/torneios/$slug'
@@ -201,20 +270,70 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/financeiro': {
+      id: '/_authenticated/admin/financeiro'
+      path: '/financeiro'
+      fullPath: '/admin/financeiro'
+      preLoaderRoute: typeof AuthenticatedAdminFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/inscricoes': {
+      id: '/_authenticated/admin/inscricoes'
+      path: '/inscricoes'
+      fullPath: '/admin/inscricoes'
+      preLoaderRoute: typeof AuthenticatedAdminInscricoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/torneios': {
+      id: '/_authenticated/admin/torneios'
+      path: '/torneios'
+      fullPath: '/admin/torneios'
+      preLoaderRoute: typeof AuthenticatedAdminTorneiosRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/treinos': {
+      id: '/_authenticated/admin/treinos'
+      path: '/treinos'
+      fullPath: '/admin/treinos'
+      preLoaderRoute: typeof AuthenticatedAdminTreinosRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
     }
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRoute
+  AuthenticatedAdminInscricoesRoute: typeof AuthenticatedAdminInscricoesRoute
+  AuthenticatedAdminTorneiosRoute: typeof AuthenticatedAdminTorneiosRoute
+  AuthenticatedAdminTreinosRoute: typeof AuthenticatedAdminTreinosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminFinanceiroRoute: AuthenticatedAdminFinanceiroRoute,
+    AuthenticatedAdminInscricoesRoute: AuthenticatedAdminInscricoesRoute,
+    AuthenticatedAdminTorneiosRoute: AuthenticatedAdminTorneiosRoute,
+    AuthenticatedAdminTreinosRoute: AuthenticatedAdminTreinosRoute,
+    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
+}
+
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =

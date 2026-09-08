@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -120,7 +121,11 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      {/* suppressHydrationWarning: extensões como ColorZilla injetam atributos
+          no <body> (ex.: cz-shortcut-listen) antes do React hidratar. É um
+          mismatch inofensivo — React já ignora e mantém o valor do cliente —
+          mas o warning some do console. https://react.dev/link/hydration-mismatch */}
+      <body suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -131,6 +136,11 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  // O painel administrativo tem o próprio shell (sidebar fixa + header próprio),
+  // então o header/footer do site público não são renderizados lá — a sidebar é
+  // `fixed inset-y-0` e ficaria por baixo do header sticky do site.
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
@@ -143,13 +153,17 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
+      {isAdmin ? (
+        <Outlet />
+      ) : (
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
+      )}
       <Toaster position="top-right" richColors />
     </QueryClientProvider>
   );

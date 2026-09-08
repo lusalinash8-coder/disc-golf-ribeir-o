@@ -6,7 +6,14 @@ import { SITE, NAV } from "@/lib/site-data";
 import logo from "@/assets/logo-vertical-light.png";
 
 export function Footer() {
-  const year = new Date().getFullYear();
+  // O SSR roda em UTC (Workers) e o cliente no fuso do visitante, então
+  // `new Date().getFullYear()` divergia entre servidor e cliente na virada do
+  // ano (21h–24h de 31/12 no horário de Brasília) e quebrava a hidratação.
+  // Fixar o fuso do site faz os dois computarem o mesmo ano.
+  const year = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+  }).format(new Date());
 
   return (
     <footer className="border-t border-black/10 bg-white text-carbon">
@@ -66,7 +73,9 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t border-black/10 pt-8 text-center text-xs text-gray-600">
-          <p>
+          {/* Resta uma janela de milissegundos exatamente na virada do ano,
+              entre o render no servidor e a hidratação — irrelevante visualmente. */}
+          <p suppressHydrationWarning>
             © {year} {SITE.name}. Todos os direitos reservados.
           </p>
         </div>
