@@ -29,7 +29,12 @@ function AdminLayout() {
   };
 
   return (
-    <SidebarProvider>
+    // translate="no" + notranslate: o Google Tradutor reparenta nós de texto
+    // (envolve em <font>) e continua remexendo neles a cada navegação da SPA,
+    // brigando com o React durante o commit e derrubando a árvore com
+    // "Failed to execute 'removeChild'". O painel é conteúdo interno em
+    // português só para a equipe, então não há motivo pra deixá-lo traduzível.
+    <SidebarProvider translate="no" className="notranslate">
       <AdminSidebar />
       {/* min-w-0: sem isso as tabelas largas esticam o flex item em vez de rolar. */}
       <SidebarInset className="min-w-0">

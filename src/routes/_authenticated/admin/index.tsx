@@ -1,5 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { createFileRoute } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -7,7 +6,6 @@ import {
   Users,
   Calendar,
   DollarSign,
-  ArrowRight,
   Dumbbell,
   Clock,
   MapPin,
@@ -15,6 +13,8 @@ import {
 import { parseLocalDate } from "@/lib/site-data";
 import { fetchTournaments } from "@/lib/tournaments";
 import { fetchTrainings } from "@/lib/trainings";
+import { fetchRegistrations } from "@/lib/registrations";
+import { statusLabel } from "@/components/TournamentCard";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({
@@ -29,28 +29,32 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   loader: async () => ({
     tournaments: await fetchTournaments(),
     trainings: await fetchTrainings(),
+    registrations: await fetchRegistrations(),
   }),
   component: AdminDashboard,
 });
 
 function AdminDashboard() {
-  const { tournaments, trainings } = Route.useLoaderData();
+  const { tournaments, trainings, registrations } = Route.useLoaderData();
 
-  const totalSpots = tournaments.reduce(
-    (acc, t) => acc + t.divisions.reduce((d, div) => d + (div.spots ?? 0), 0),
-    0,
-  );
-  const totalRevenue = tournaments.reduce(
-    (acc, t) =>
-      acc + t.divisions.reduce((d, div) => d + (div.prices[0]?.price ?? 0) * (div.spots ?? 0), 0),
-    0,
-  );
+  const nextTournament = tournaments[0];
+  const nextTournamentRegistrations = nextTournament
+    ? registrations.filter((r) => r.tournamentSlug === nextTournament.slug)
+    : [];
+  const registeredCount = nextTournamentRegistrations.filter(
+    (r) => r.status !== "cancelled",
+  ).length;
+  const receivedRevenue = nextTournamentRegistrations
+    .filter((r) => r.status === "confirmed")
+    .reduce((acc, r) => acc + r.price, 0);
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Painel da Turma</h1>
-        <p className="text-muted-foreground">Visão geral dos torneios e inscrições.</p>
+        <p className="text-muted-foreground">
+          Acompanhamento geral de torneios, treinos, inscrições e finanças.
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -75,15 +79,15 @@ function AdminDashboard() {
         <Card className="border-border bg-card">
           <CardContent className="p-5">
             <Users className="h-6 w-6 text-acid" />
-            <p className="mt-2 text-sm text-muted-foreground">Vagas totais</p>
-            <p className="text-2xl font-bold">{totalSpots}</p>
+            <p className="mt-2 text-sm text-muted-foreground">Inscritos</p>
+            <p className="text-2xl font-bold">{registeredCount}</p>
           </CardContent>
         </Card>
         <Card className="border-border bg-card">
           <CardContent className="p-5">
             <DollarSign className="h-6 w-6 text-buzz" />
-            <p className="mt-2 text-sm text-muted-foreground">Receita potencial</p>
-            <p className="text-2xl font-bold">R$ {totalRevenue}</p>
+            <p className="mt-2 text-sm text-muted-foreground">Receita recebida</p>
+            <p className="text-2xl font-bold">R$ {receivedRevenue}</p>
           </CardContent>
         </Card>
         <Card className="border-border bg-card">
@@ -117,16 +121,12 @@ function AdminDashboard() {
                     {parseLocalDate(t.date).toLocaleDateString("pt-BR")} — {t.location}
                   </p>
                 </div>
-                <Button
-                  asChild
-                  size="sm"
-                  variant="outline"
-                  className="border-acid text-acid hover:bg-acid/10"
+                <Badge
+                  variant={t.status === "open" ? "default" : "secondary"}
+                  className={t.status === "open" ? "bg-acid text-background" : ""}
                 >
-                  <Link to="/torneios/$slug" params={{ slug: t.slug }}>
-                    Ver <ArrowRight className="ml-1 h-3 w-3" />
-                  </Link>
-                </Button>
+                  {t.status === "open" ? "Aberto" : statusLabel(t.status)}
+                </Badge>
               </div>
             ))}
           </CardContent>

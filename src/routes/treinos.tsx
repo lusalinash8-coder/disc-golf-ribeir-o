@@ -6,6 +6,7 @@ import { SITE, PARTNERS, USP_COURSE } from "@/lib/site-data";
 import { fetchTrainings } from "@/lib/trainings";
 import treinosImage from "@/assets/TreinosDG.png";
 import uspMapImage from "@/assets/usp-course-map.png";
+import udiscLogo from "@/assets/logoUDisc-white.png";
 
 const uspPartner = PARTNERS.find((p) => p.name === "USP");
 
@@ -118,7 +119,9 @@ function TrainingsPage() {
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <Button asChild variant="outline" className="border-buzz text-buzz hover:bg-buzz/10 hover:text-buzz">
                 <a href={USP_COURSE.udiscUrl} target="_blank" rel="noopener noreferrer">
-                  Ver campo no UDisc <ExternalLink className="ml-2 h-4 w-4" />
+                  Ver campo no
+                  <img src={udiscLogo} alt="UDisc" className="h-4 w-auto" />
+                  <ExternalLink className="h-4 w-4" />
                 </a>
               </Button>
               {uspPartner && <img src={uspPartner.logo} alt={uspPartner.fullName} className="h-9 w-auto object-contain opacity-80" />}

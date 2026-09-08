@@ -13,6 +13,20 @@ export function parseLocalDate(dateStr: string) {
   return new Date(year, month - 1, day);
 }
 
+/**
+ * Um torneio é considerado realizado assim que sua data (ou data final) passa,
+ * ou assim que o organizador o arquiva manualmente (ex: cancelamento).
+ */
+export function isTournamentPast(t: {
+  date: string;
+  endDate?: string;
+  archivedAt?: string | null;
+}): boolean {
+  if (t.archivedAt) return true;
+  const today = new Date().toISOString().slice(0, 10);
+  return (t.endDate ?? t.date) < today;
+}
+
 export const SITE = {
   name: "A Turma do Disc Golf",
   tagline: "Disc Golf em Ribeirão Preto",
@@ -131,6 +145,10 @@ export type Tournament = {
   pdgaLink?: string;
   /** logos de apoio exibidos na página do torneio; se omitido, usa TOURNAMENT_DEFAULT_SPONSORS */
   sponsors?: Partner[];
+  /** presente quando o organizador arquiva o torneio manualmente antes da data */
+  archivedAt?: string;
+  /** galeria de fotos, adicionada pelo painel depois que o torneio termina */
+  photos?: string[];
 };
 
 export type PastTournament = {
@@ -149,18 +167,22 @@ export type PastTournament = {
 export const FAQ = [
   {
     question: "Preciso ter meus próprios discos?",
-    answer: "Não! Nos treinos e aulas de iniciação emprestamos discos para quem ainda não tem. Eventualmente você vai querer o seu próprio, mas a entrada no esporte é de graça.",
+    answer:
+      "Não! Nos treinos e aulas de iniciação emprestamos discos para quem ainda não tem. Eventualmente você vai querer o seu próprio, mas a entrada no esporte é de graça.",
   },
   {
     question: "O Disc Golf é difícil de aprender?",
-    answer: "Não. A regra básica é simples: lance o disco até a cesta com o menor número de arremessos possível. A técnica evolui com o tempo, mas você se diverte desde o primeiro dia.",
+    answer:
+      "Não. A regra básica é simples: lance o disco até a cesta com o menor número de arremessos possível. A técnica evolui com o tempo, mas você se diverte desde o primeiro dia.",
   },
   {
     question: "Posso levar crianças?",
-    answer: "Com certeza. Disc Golf é uma atividade familiar, aberta a todos. Crianças adoram a experiência de acertar as correntes.",
+    answer:
+      "Com certeza. Disc Golf é uma atividade familiar, aberta a todos. Crianças adoram a experiência de acertar as correntes.",
   },
   {
     question: "Como faço para me inscrever em um torneio?",
-    answer: "Escolha o torneio na página Torneios, selecione sua divisão e preencha o cadastro. A confirmação da vaga é feita automaticamente após o pagamento com cartão.",
+    answer:
+      "Escolha o torneio na página Torneios, selecione sua divisão e preencha o cadastro. A confirmação da vaga é feita automaticamente após o pagamento com cartão.",
   },
 ];

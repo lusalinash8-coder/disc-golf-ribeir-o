@@ -15,13 +15,18 @@ export type Registration = {
   fullName: string;
   email: string;
   phone: string;
+  cpf: string;
+  city: string;
+  birthDate: string;
+  pdgaNumber: string;
   status: RegistrationStatus;
   notes: string | null;
   createdAt: string;
 };
 
 const REGISTRATION_FIELDS = `
-  id, tournament_id, division_name, price_label, price, full_name, email, phone, status, notes, created_at,
+  id, tournament_id, division_name, price_label, price, full_name, email, phone,
+  cpf, city, birth_date, pdga_number, status, notes, created_at,
   tournaments ( slug, title )
 `;
 
@@ -34,6 +39,10 @@ type RegistrationRow = {
   full_name: string;
   email: string;
   phone: string;
+  cpf: string;
+  city: string;
+  birth_date: string;
+  pdga_number: string;
   status: string;
   notes: string | null;
   created_at: string;
@@ -60,6 +69,10 @@ function toRegistration(row: RegistrationRow): Registration {
     fullName: row.full_name,
     email: row.email,
     phone: row.phone,
+    cpf: row.cpf,
+    city: row.city,
+    birthDate: row.birth_date,
+    pdgaNumber: row.pdga_number,
     status: toStatus(row.status),
     notes: row.notes,
     createdAt: row.created_at,

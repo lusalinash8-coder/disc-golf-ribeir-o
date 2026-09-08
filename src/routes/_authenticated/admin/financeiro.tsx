@@ -1,5 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -8,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { parseLocalDate } from "@/lib/site-data";
 import { fetchTournaments } from "@/lib/tournaments";
 import { fetchRegistrations } from "@/lib/registrations";
 
@@ -22,14 +33,31 @@ export const Route = createFileRoute("/_authenticated/admin/financeiro")({
   component: AdminFinanceiro,
 });
 
+const ALL_PERIOD = "all";
+
+/** period is "all", "y:<year>" or "s:<year>:<1|2>" (semester, months 0-5 / 6-11). */
+function matchesPeriod(date: string, period: string): boolean {
+  if (period === ALL_PERIOD) return true;
+  const d = parseLocalDate(date);
+  const [kind, yearStr, semStr] = period.split(":");
+  if (Number(yearStr) !== d.getFullYear()) return false;
+  if (kind === "y") return true;
+  const isFirstHalf = d.getMonth() < 6;
+  return semStr === "1" ? isFirstHalf : !isFirstHalf;
+}
+
 function AdminFinanceiro() {
   const { tournaments, registrations } = Route.useLoaderData();
+  const [period, setPeriod] = useState(ALL_PERIOD);
 
-  const rows = tournaments.map((t) => {
-    const potential = t.divisions.reduce(
-      (acc, div) => acc + (div.prices[0]?.price ?? 0) * (div.spots ?? 0),
-      0,
-    );
+  const years = useMemo(() => {
+    const set = new Set(tournaments.map((t) => parseLocalDate(t.date).getFullYear()));
+    return [...set].sort((a, b) => b - a);
+  }, [tournaments]);
+
+  const periodTournaments = tournaments.filter((t) => matchesPeriod(t.date, period));
+
+  const rows = periodTournaments.map((t) => {
     const tournamentRegistrations = registrations.filter((r) => r.tournamentSlug === t.slug);
     const confirmed = tournamentRegistrations
       .filter((r) => r.status === "confirmed")
@@ -37,16 +65,15 @@ function AdminFinanceiro() {
     const pending = tournamentRegistrations
       .filter((r) => r.status === "pending" || r.status === "waitlist")
       .reduce((acc, r) => acc + r.price, 0);
-    return { slug: t.slug, title: t.title, potential, confirmed, pending };
+    return { slug: t.slug, title: t.title, confirmed, pending };
   });
 
   const totals = rows.reduce(
     (acc, r) => ({
-      potential: acc.potential + r.potential,
       confirmed: acc.confirmed + r.confirmed,
       pending: acc.pending + r.pending,
     }),
-    { potential: 0, confirmed: 0, pending: 0 },
+    { confirmed: 0, pending: 0 },
   );
 
   return (
@@ -54,18 +81,30 @@ function AdminFinanceiro() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Financeiro</h1>
         <p className="text-muted-foreground">
-          Receita por torneio, com base nas inscrições registradas. Relatório provisório até a
-          integração com Stripe.
+          Receita por torneio, com base nas inscrições registradas.
         </p>
       </div>
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <Card className="border-border bg-card">
-          <CardContent className="p-5">
-            <p className="text-sm text-muted-foreground">Receita potencial</p>
-            <p className="text-2xl font-bold">R$ {totals.potential}</p>
-          </CardContent>
-        </Card>
+      <div className="mb-4">
+        <Select value={period} onValueChange={setPeriod}>
+          <SelectTrigger className="w-[220px] border-border bg-background">
+            <SelectValue placeholder="Período" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL_PERIOD}>Todo o histórico</SelectItem>
+            {years.map((year) => (
+              <SelectGroup key={year}>
+                <SelectLabel>{year}</SelectLabel>
+                <SelectItem value={`y:${year}`}>Ano completo</SelectItem>
+                <SelectItem value={`s:${year}:1`}>1º semestre</SelectItem>
+                <SelectItem value={`s:${year}:2`}>2º semestre</SelectItem>
+              </SelectGroup>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-2">
         <Card className="border-border bg-card">
           <CardContent className="p-5">
             <p className="text-sm text-muted-foreground">Confirmada</p>
@@ -83,13 +122,16 @@ function AdminFinanceiro() {
       <Card className="border-border bg-card">
         <CardContent className="p-0">
           {rows.length === 0 ? (
-            <p className="p-5 text-sm text-muted-foreground">Nenhum torneio cadastrado.</p>
+            <p className="p-5 text-sm text-muted-foreground">
+              {tournaments.length === 0
+                ? "Nenhum torneio cadastrado."
+                : "Nenhum torneio no período selecionado."}
+            </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Torneio</TableHead>
-                  <TableHead>Potencial</TableHead>
                   <TableHead>Confirmada</TableHead>
                   <TableHead>Pendente</TableHead>
                 </TableRow>
@@ -98,7 +140,6 @@ function AdminFinanceiro() {
                 {rows.map((r) => (
                   <TableRow key={r.slug}>
                     <TableCell className="font-medium">{r.title}</TableCell>
-                    <TableCell>R$ {r.potential}</TableCell>
                     <TableCell className="text-acid">R$ {r.confirmed}</TableCell>
                     <TableCell>R$ {r.pending}</TableCell>
                   </TableRow>

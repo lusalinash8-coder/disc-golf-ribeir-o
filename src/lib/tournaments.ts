@@ -8,6 +8,7 @@ import type { PastTournament, Tournament, TournamentDivision } from "@/lib/site-
 const TOURNAMENT_FIELDS = `
   slug, title, date, end_date, registration_deadline, registration_deadline_confirmed,
   location, description, image_url, status, prices_approximate, pdga_link,
+  archived_at, photos,
   tournament_divisions ( name, spots, sort_order, division_prices ( label, price, sort_order ) )
 `;
 
@@ -37,6 +38,8 @@ type TournamentRow = {
   status: string;
   prices_approximate: boolean;
   pdga_link: string | null;
+  archived_at: string | null;
+  photos: string[];
   tournament_divisions: DivisionRow[];
 };
 
@@ -58,7 +61,8 @@ function toStatus(value: string): Tournament["status"] {
   return STATUSES.includes(value) ? (value as Tournament["status"]) : "closed";
 }
 
-const bySortOrder = (a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order;
+const bySortOrder = (a: { sort_order: number }, b: { sort_order: number }) =>
+  a.sort_order - b.sort_order;
 
 function toDivision(row: DivisionRow): TournamentDivision {
   const prices = [...row.division_prices].sort(bySortOrder).map((p) => ({
@@ -90,6 +94,8 @@ function toTournament(row: TournamentRow): Tournament {
     ...(row.end_date ? { endDate: row.end_date } : {}),
     ...(row.prices_approximate ? { pricesApproximate: true } : {}),
     ...(row.pdga_link ? { pdgaLink: row.pdga_link } : {}),
+    ...(row.archived_at ? { archivedAt: row.archived_at } : {}),
+    ...(row.photos.length > 0 ? { photos: row.photos } : {}),
     // `sponsors` is deliberately omitted: partner logos are still bundled
     // assets, so the components fall back to TOURNAMENT_DEFAULT_SPONSORS.
   };
@@ -156,4 +162,140 @@ export async function fetchPastTournaments(): Promise<PastTournament[]> {
 
   if (error) fail("os torneios realizados", error.message);
   return (data as unknown as PastTournamentRow[]).map(toPastTournament);
+}
+
+// ---------------------------------------------------------------------------
+// Admin CRUD — general tournament fields only. Divisions/prices are still
+// managed directly in Supabase until that editor is built.
+// ---------------------------------------------------------------------------
+
+export type TournamentGeneralInput = {
+  title: string;
+  date: string;
+  endDate?: string;
+  registrationDeadline: string;
+  registrationDeadlineConfirmed: boolean;
+  location: string;
+  description: string;
+  imageUrl?: string;
+  status: Tournament["status"];
+  pricesApproximate?: boolean;
+  pdgaLink?: string;
+};
+
+function toTournamentRow(input: TournamentGeneralInput) {
+  return {
+    title: input.title,
+    date: input.date,
+    end_date: input.endDate ?? null,
+    registration_deadline: input.registrationDeadline,
+    registration_deadline_confirmed: input.registrationDeadlineConfirmed,
+    location: input.location,
+    description: input.description,
+    image_url: input.imageUrl ?? null,
+    status: input.status,
+    prices_approximate: input.pricesApproximate ?? false,
+    pdga_link: input.pdgaLink ?? null,
+  };
+}
+
+/** ascii-fold + kebab-case; the admin form pre-fills this from the title but lets it be edited before creating. */
+export function slugifyTournamentTitle(title: string): string {
+  return title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export async function createTournament(
+  slug: string,
+  input: TournamentGeneralInput,
+): Promise<Tournament> {
+  const { error } = await supabase.from("tournaments").insert({ slug, ...toTournamentRow(input) });
+  if (error) fail("o torneio", error.message);
+  const created = await fetchTournamentBySlug(slug);
+  if (!created) fail("o torneio", "não encontrado depois de criado");
+  return created;
+}
+
+export async function updateTournament(
+  slug: string,
+  input: TournamentGeneralInput,
+): Promise<Tournament> {
+  const { error } = await supabase
+    .from("tournaments")
+    .update(toTournamentRow(input))
+    .eq("slug", slug);
+  if (error) fail("o torneio", error.message);
+  const updated = await fetchTournamentBySlug(slug);
+  if (!updated) fail("o torneio", "não encontrado depois de atualizado");
+  return updated;
+}
+
+/** Cascades: deletes the tournament's divisions, prices AND registrations (on delete cascade). */
+export async function deleteTournament(slug: string): Promise<void> {
+  const { error } = await supabase.from("tournaments").delete().eq("slug", slug);
+  if (error) fail("o torneio", error.message);
+}
+
+export async function setTournamentArchived(slug: string, archived: boolean): Promise<void> {
+  const { error } = await supabase
+    .from("tournaments")
+    .update({ archived_at: archived ? new Date().toISOString() : null })
+    .eq("slug", slug);
+  if (error) fail("o torneio", error.message);
+}
+
+// ---------------------------------------------------------------------------
+// Storage — tournament logo + photo gallery, both in the shared `media` bucket
+// (public, 10 MB/file cap enforced server-side — see the storage migration).
+// ---------------------------------------------------------------------------
+
+export const MAX_TOURNAMENT_IMAGE_BYTES = 10 * 1024 * 1024;
+
+function fileExtension(file: File): string {
+  const fromName = file.name.split(".").pop();
+  if (fromName && fromName.length <= 5) return fromName.toLowerCase();
+  return file.type.split("/").pop() ?? "jpg";
+}
+
+async function uploadTournamentMedia(slug: string, file: File, folder: string): Promise<string> {
+  if (file.size > MAX_TOURNAMENT_IMAGE_BYTES) {
+    throw new Error(`A imagem "${file.name}" passa de 10 MB.`);
+  }
+  const path = `tournaments/${slug}/${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${fileExtension(file)}`;
+  const { error } = await supabase.storage.from("media").upload(path, file);
+  if (error) fail("a imagem", error.message);
+  return supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
+}
+
+export async function uploadTournamentLogo(slug: string, file: File): Promise<string> {
+  return uploadTournamentMedia(slug, file, "logo");
+}
+
+export async function addTournamentPhotos(slug: string, files: File[]): Promise<string[]> {
+  const uploaded = await Promise.all(
+    files.map((file) => uploadTournamentMedia(slug, file, "gallery")),
+  );
+  const current = await fetchTournamentBySlug(slug);
+  const photos = [...(current?.photos ?? []), ...uploaded];
+  const { error } = await supabase.from("tournaments").update({ photos }).eq("slug", slug);
+  if (error) fail("a galeria", error.message);
+  return photos;
+}
+
+export async function removeTournamentPhoto(slug: string, photoUrl: string): Promise<string[]> {
+  const current = await fetchTournamentBySlug(slug);
+  const photos = (current?.photos ?? []).filter((p) => p !== photoUrl);
+  const { error } = await supabase.from("tournaments").update({ photos }).eq("slug", slug);
+  if (error) fail("a galeria", error.message);
+
+  const marker = "/object/public/media/";
+  const markerIndex = photoUrl.indexOf(marker);
+  if (markerIndex !== -1) {
+    await supabase.storage.from("media").remove([photoUrl.slice(markerIndex + marker.length)]);
+  }
+  return photos;
 }
